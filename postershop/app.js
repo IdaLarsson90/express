@@ -1,3 +1,6 @@
+// const nedb = require('nedb-promise');
+// const database = new nedb({filename: 'database.db', autoload: true});
+
 const { response, request } = require('express');
 const express = require('express');
 const app = express();
@@ -48,7 +51,8 @@ app.get('/api/cart', (request, response) => {
 app.delete('/api/cart', (request, response) => {
     //Ta bort Number()
     const productSerial = request.body;
-    const productId = Number(productSerial.serial)
+    const productId = productSerial.serial;
+
     if( productSerial.hasOwnProperty('serial')) {
         cart = cart.filter((product) =>{
             return product.serial !== productId
