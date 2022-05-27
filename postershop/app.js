@@ -1,7 +1,6 @@
 // const nedb = require('nedb-promise');
 // const database = new nedb({filename: 'database.db', autoload: true});
 
-const { response, request } = require('express');
 const express = require('express');
 const app = express();
 const PORT = 8000;
@@ -20,17 +19,28 @@ app.get('/api/products', (request, response) => {
 
 app.post('/api/cart', (request, response) => {
     const productSerial = request.body;
-    if( productSerial.hasOwnProperty('serial')) {
-        addProduct = productsArr.filter((product)=>{
-            if(product.serial == Number(productSerial.serial)) {
-                cart.push(product)
+
+    if( productSerial.hasOwnProperty('serial')){
+        
+        const filteredCart = cart.filter((product)=> {
+            return productSerial.serial === product.serial
+        });
+        console.log(filteredCart);
+
+        for (let i = 0; i < productsArr.length; i++) {
+            if( productSerial.serial === productsArr[i].serial && filteredCart.length < 1) {
+                cart.push(productsArr[i])
+               console.log('added to cart')
+            } else if (productSerial.serial !== productsArr[i].serial) {
+                console.log()
             }
-            return;
-        })
+         
+        }
+
         const resObj = {
             success:true,
             cart: cart
-        }
+        }  
         response.json(resObj)
     } else {
         const resObj = {
