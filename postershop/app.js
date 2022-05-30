@@ -19,37 +19,44 @@ app.get('/api/products', (request, response) => {
 
 app.post('/api/cart', (request, response) => {
     const productSerial = request.body;
+    const resObj = {
+        success:true,
+        cart: cart,
+    } 
+    
+   
+    if( productSerial.hasOwnProperty('serial')){ 
 
-    if( productSerial.hasOwnProperty('serial')){
-        
-        const filteredCart = cart.filter((product)=> {
-            return productSerial.serial === product.serial
-        });
-        console.log(filteredCart);
+        let filteredCart = cart.filter((product) => {                
+           return productSerial.serial === product.serial 
+        })
 
         for (let i = 0; i < productsArr.length; i++) {
-            if( productSerial.serial === productsArr[i].serial && filteredCart.length < 1) {
+           
+            if (productSerial.serial === productsArr[i].serial && filteredCart.length < 1) {
                 cart.push(productsArr[i])
-               console.log('added to cart')
-            } else if (productSerial.serial !== productsArr[i].serial) {
-                console.log()
-            }
-         
-        }
+                resObj.message = "Product added"
+                break;
+            }   else if (productSerial.serial !== productsArr[i].serial){
+                resObj.message = "Product does not exist"
 
-        const resObj = {
-            success:true,
-            cart: cart
-        }  
+            }   else if (filteredCart.length > 0) {
+                resObj.message = "product already in cart"
+                break;
+            }
+            
+        }
+            
         response.json(resObj)
-    } else {
+    }
+    else {
         const resObj = {
             success:false,
             message: 'Invalid body'
         }
         response.status(400).json(resObj)
     }
-})
+});
 
 app.get('/api/cart', (request, response) => {
     const resObj = {
@@ -59,7 +66,6 @@ app.get('/api/cart', (request, response) => {
 })
 
 app.delete('/api/cart', (request, response) => {
-    //Ta bort Number()
     const productSerial = request.body;
     const productId = productSerial.serial;
 

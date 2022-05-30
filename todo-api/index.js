@@ -21,7 +21,6 @@ app.use((request, response) => {
     const resObj = {
         message: 'no endpoint found'
     }
-
     response.status(404).json(resObj);
 })
 
